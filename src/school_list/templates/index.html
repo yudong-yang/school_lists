@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}学校列表 - School List{% endblock %}
+
+{% block body %}
+<header class="topbar">
+  <div>
+    <p class="eyebrow">Gaokao University Manager</p>
+    <h1>学校列表</h1>
+  </div>
+  <form class="filters" id="schoolFilters">
+    <input name="keyword" placeholder="搜索学校、城市或备注">
+    <select name="level">
+      <option value="">全部等级</option>
+      {% for level in levels %}
+      <option value="{{ level }}">{{ level }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">查询</button>
+  </form>
+</header>
+<main>
+  <section class="result-meta" id="resultMeta"></section>
+  <section class="school-grid" id="schoolGrid"></section>
+  <nav class="pagination" id="pagination"></nav>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='schools.js') }}"></script>
+{% endblock %}

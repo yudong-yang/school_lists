@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}学校详情 - School List{% endblock %}
+
+{% block body %}
+<header class="detail-hero" id="detailHero">
+  <a class="back-link" href="/">返回列表</a>
+  <h1>学校详情</h1>
+</header>
+<main>
+  <section class="detail-grid" id="detailGrid"></section>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.SCHOOL_ID = {{ school_id }};
+</script>
+<script src="{{ url_for('static', filename='school-detail.js') }}"></script>
+{% endblock %}

@@ -1,13 +1,15 @@
 # School List
 
-一个用于查询和管理高考大学信息的 Python 项目。当前版本提供轻量 CLI 和 SQLite
-存储，后续可以继续扩展为 Web API、后台管理系统或数据采集管道。
+一个用于查询和管理高考大学信息的 Python 项目。当前版本提供 CLI、SQLite 存储、
+Flask 后端接口，以及前后端分离的学校列表和详情页面。
 
 ## 功能
 
 - 新增大学信息
 - 按名称、省份、办学层次等条件查询
 - 查看大学详情
+- Flask JSON API
+- 前端模板、CSS、JS 与后端接口分离
 - Web 学校列表页和详情页
 - SQLite 本地持久化
 
@@ -28,7 +30,16 @@ school-list-web
 
 ```bash
 PYTHONPATH=src python3 -m school_list.cli --db data/schools.db init
+PYTHONPATH=src python3 -m school_list.web --db data/schools.db
 ```
+
+## Web 结构
+
+- 后端接口：[src/school_list/web.py](/Users/yangyudong/Documents/school_list/src/school_list/web.py)
+- 前端模板：`src/school_list/templates/`
+- 前端静态资源：`src/school_list/static/`
+- 列表接口：`GET /api/schools?page=1&page_size=20&keyword=&level=`
+- 详情接口：`GET /api/schools/<id>`
 
 ## 数据字段
 
