@@ -8,6 +8,7 @@
 - 新增大学信息
 - 按名称、省份、办学层次等条件查询
 - 查看大学详情
+- Web 学校列表页和详情页
 - SQLite 本地持久化
 
 ## 快速开始
@@ -17,8 +18,10 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
 school-list init
-school-list add "清华大学" --province 北京 --city 北京 --level 本科 --type 综合 --website https://www.tsinghua.edu.cn
+school-list add "清华大学" --province 北京 --city 北京 --level 985 --type 综合 --address 北京市海淀区清华园1号 --website https://www.tsinghua.edu.cn
 school-list list --province 北京
+school-list-import-gk100 --insecure
+school-list-web
 ```
 
 如果不安装包，也可以直接运行：
@@ -37,7 +40,12 @@ PYTHONPATH=src python3 -m school_list.cli --db data/schools.db init
 - `level`: 办学层次，例如本科、专科
 - `school_type`: 学校类型，例如综合、理工、师范、医药
 - `ownership`: 公办、民办、中外合作办学等
+- `address`: 学校地址
+- `icon_url`: 学校图标
 - `website`: 官方网站
+- `source_url`: 数据来源页面
+- `badges`: 985、211、双一流等标签
+- `authority`: 主管部门
 - `notes`: 备注
 
 ## 开发

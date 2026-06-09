@@ -28,6 +28,7 @@ def build_parser() -> argparse.ArgumentParser:
     add_parser.add_argument("--level", default="")
     add_parser.add_argument("--type", dest="school_type", default="")
     add_parser.add_argument("--ownership", default="")
+    add_parser.add_argument("--address", default="")
     add_parser.add_argument("--website", default="")
     add_parser.add_argument("--notes", default="")
 
@@ -61,6 +62,7 @@ def main(argv: list[str] | None = None) -> int:
             level=args.level,
             school_type=args.school_type,
             ownership=args.ownership,
+            address=args.address,
             website=args.website,
             notes=args.notes,
         )
@@ -115,6 +117,7 @@ def _format_detail(university: University) -> str:
         ("层次", university.level),
         ("类型", university.school_type),
         ("办学性质", university.ownership),
+        ("地址", university.address),
         ("官网", university.website),
         ("备注", university.notes),
     ]

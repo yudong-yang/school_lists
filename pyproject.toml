@@ -17,6 +17,8 @@ dev = [
 
 [project.scripts]
 school-list = "school_list.cli:main"
+school-list-web = "school_list.web:main"
+school-list-import-gk100 = "school_list.gk100_importer:main"
 
 [build-system]
 requires = ["hatchling"]

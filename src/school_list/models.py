@@ -11,7 +11,12 @@ class University:
     level: str = ""
     school_type: str = ""
     ownership: str = ""
+    address: str = ""
+    icon_url: str = ""
     website: str = ""
+    source_url: str = ""
+    badges: str = ""
+    authority: str = ""
     notes: str = ""
     id: int | None = None
 

@@ -24,7 +24,12 @@ class UniversityRepository:
                     level TEXT NOT NULL DEFAULT '',
                     school_type TEXT NOT NULL DEFAULT '',
                     ownership TEXT NOT NULL DEFAULT '',
+                    address TEXT NOT NULL DEFAULT '',
+                    icon_url TEXT NOT NULL DEFAULT '',
                     website TEXT NOT NULL DEFAULT '',
+                    source_url TEXT NOT NULL DEFAULT '',
+                    badges TEXT NOT NULL DEFAULT '',
+                    authority TEXT NOT NULL DEFAULT '',
                     notes TEXT NOT NULL DEFAULT '',
                     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -32,6 +37,11 @@ class UniversityRepository:
                 )
                 """
             )
+            self._ensure_column(conn, "address", "TEXT NOT NULL DEFAULT ''")
+            self._ensure_column(conn, "icon_url", "TEXT NOT NULL DEFAULT ''")
+            self._ensure_column(conn, "source_url", "TEXT NOT NULL DEFAULT ''")
+            self._ensure_column(conn, "badges", "TEXT NOT NULL DEFAULT ''")
+            self._ensure_column(conn, "authority", "TEXT NOT NULL DEFAULT ''")
             conn.execute(
                 """
                 CREATE TRIGGER IF NOT EXISTS universities_updated_at
@@ -51,9 +61,10 @@ class UniversityRepository:
             cursor = conn.execute(
                 """
                 INSERT INTO universities (
-                    name, province, city, level, school_type, ownership, website, notes
+                    name, province, city, level, school_type, ownership, address,
+                    icon_url, website, source_url, badges, authority, notes
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     university.name.strip(),
@@ -62,7 +73,12 @@ class UniversityRepository:
                     university.level.strip(),
                     university.school_type.strip(),
                     university.ownership.strip(),
+                    university.address.strip(),
+                    university.icon_url.strip(),
                     university.website.strip(),
+                    university.source_url.strip(),
+                    university.badges.strip(),
+                    university.authority.strip(),
                     university.notes.strip(),
                 ),
             )
@@ -117,6 +133,56 @@ class UniversityRepository:
             count += 1
         return count
 
+    def upsert(self, university: University) -> int:
+        university.validate()
+        self.initialize()
+        with self._connect() as conn:
+            existing = conn.execute(
+                "SELECT id FROM universities WHERE name = ? AND province = ?",
+                (university.name.strip(), university.province.strip()),
+            ).fetchone()
+            if existing:
+                conn.execute(
+                    """
+                    UPDATE universities
+                    SET city = ?,
+                        level = ?,
+                        school_type = ?,
+                        ownership = ?,
+                        address = ?,
+                        icon_url = ?,
+                        website = ?,
+                        source_url = ?,
+                        badges = ?,
+                        authority = ?,
+                        notes = ?
+                    WHERE id = ?
+                    """,
+                    (
+                        university.city.strip(),
+                        university.level.strip(),
+                        university.school_type.strip(),
+                        university.ownership.strip(),
+                        university.address.strip(),
+                        university.icon_url.strip(),
+                        university.website.strip(),
+                        university.source_url.strip(),
+                        university.badges.strip(),
+                        university.authority.strip(),
+                        university.notes.strip(),
+                        existing["id"],
+                    ),
+                )
+                return int(existing["id"])
+            return self.add(university)
+
+    def bulk_upsert(self, universities: Iterable[University]) -> int:
+        count = 0
+        for university in universities:
+            self.upsert(university)
+            count += 1
+        return count
+
     def _connect(self) -> sqlite3.Connection:
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
@@ -132,6 +198,17 @@ class UniversityRepository:
             level=row["level"],
             school_type=row["school_type"],
             ownership=row["ownership"],
+            address=row["address"],
+            icon_url=row["icon_url"],
             website=row["website"],
+            source_url=row["source_url"],
+            badges=row["badges"],
+            authority=row["authority"],
             notes=row["notes"],
         )
+
+    @staticmethod
+    def _ensure_column(conn: sqlite3.Connection, column_name: str, definition: str) -> None:
+        columns = {row["name"] for row in conn.execute("PRAGMA table_info(universities)")}
+        if column_name not in columns:
+            conn.execute(f"ALTER TABLE universities ADD COLUMN {column_name} {definition}")

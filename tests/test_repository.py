@@ -17,8 +17,9 @@ class UniversityRepositoryTest(unittest.TestCase):
                         name="清华大学",
                         province="北京",
                         city="北京",
-                        level="本科",
+                        level="985",
                         school_type="综合",
+                        address="北京市海淀区清华园1号",
                     )
                 )
 
@@ -27,6 +28,8 @@ class UniversityRepositoryTest(unittest.TestCase):
                 self.assertEqual(university_id, 1)
                 self.assertEqual(len(results), 1)
                 self.assertEqual(results[0].name, "清华大学")
+                self.assertEqual(results[0].level, "985")
+                self.assertEqual(results[0].address, "北京市海淀区清华园1号")
 
     def test_requires_name_and_province(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
